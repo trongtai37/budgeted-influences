@@ -3,10 +3,10 @@
 class SingleGreedy : public Framework
 {
 public:
-	SingleGreedy(Network * g, uint k);
+	SingleGreedy(Network *g, uint k);
 	~SingleGreedy();
 	double get_solution();
+
 private:
 	uint k;
 };
-

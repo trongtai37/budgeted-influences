@@ -1,11 +1,9 @@
 #pragma once
 #include "Framework.h"
 
-class Greedy: public Framework
-{
+class Greedy : public Framework {
 public:
-	Greedy(Network * g);
-	~Greedy();
-	double get_solution(bool is_ds = true);
+  Greedy(Network *g);
+  ~Greedy();
+  double get_solution(bool is_ds = true);
 };
-

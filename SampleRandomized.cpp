@@ -1,20 +1,20 @@
-#include "Randomized.h"
+#include "SampleRandomized.h"
 #include <iostream>
 #include <math.h>
 #include <stdlib.h>
 
-Randomized::Randomized(Network *g) : Streaming(g) {
+SampleRandomized::SampleRandomized(Network *g) : Streaming(g) {
   // Calculating ALPHA and EPSILON_TAG
   Constants::ALPHA =
       2 / (3 + Constants::BETA - (Constants::BETA / Constants::K));
-  Constants::EPS_TAG =
-      (3 + Constants::BETA - (Constants::BETA / Constants::K)) * Constants::EPS;
-  cout << "Algorithm 4 is running ..." << endl;
+  Constants::EPS_TAG = (2 * Constants::EPS) / Constants::ALPHA;
+  Constants::NO_DENOISE_STEPS = 2;
+  cout << "Algorithm 5 is running ..." << endl;
 }
 
-Randomized::~Randomized() {}
+SampleRandomized::~SampleRandomized() {}
 
-int Randomized::select_element(int j, uint e, int step) {
+int SampleRandomized::select_element(int j, uint e, int step) {
   vector<double> temp_inf(Constants::K), p(Constants::K);
   uint J_size = 0;
 

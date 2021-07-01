@@ -1,37 +1,46 @@
 #include "Deterministic.h"
+#include <iostream>
+#include <math.h>
 
+Deterministic::Deterministic(Network *g) : Streaming(g) {
+  Constants::ALPHA = 0.5;
+  Constants::EPS_TAG = 4 * Constants::EPS;
 
-Deterministic::Deterministic(Network * g) : Streaming(g)
-{
+  // Re-initialize cost_matrix
+  int no_nodes = g->get_no_nodes();
+  fill(cost_matrix.begin(), cost_matrix.end(), vector<int>(no_nodes, 1));
+
+  cout << "Algorithm 2 is running ..." << cost_matrix[0][0] << endl;
 }
 
-Deterministic::~Deterministic()
-{
-}
+Deterministic::~Deterministic() {}
 
-int Deterministic::select_element(int j, uint e, int step)
-{
-	double max = 0.0;
-	uint jj;
-	for (int ii = 0; ii < Constants::K; ++ii) {
-		kseeds seeds_tmp = sub_seeds[j][step];
-		seeds_tmp.push_back(kp(e, ii));
-		double est_F = estimate_influence(seeds_tmp);
-		++no_queries;
-		if (max < est_F) {
-			max = est_F;
-			jj = ii;
-		}
-	}
+int Deterministic::select_element(int j, uint e, int step) {
+  uint i_max;
+  double max_inf = 0.0;
 
-	// no need to consider denoise step in deterministic
-	//double eps = Constants::EPS / (Constants::NO_DENOISE_STEPS > 1 ? Constants::NO_DENOISE_STEPS - 1 : Constants::NO_DENOISE_STEPS) * step;
-	double eps = Constants::EPS;
+  /* Find i_max */
+  for (int i = 0; i < Constants::K; ++i) {
+    kseeds seeds_tmp = sub_seeds[j][step];
+    seeds_tmp.push_back(kpoint(e, i));
+    double current_inf = estimate_influence(seeds_tmp);
+    ++no_queries;
+    if (max_inf < current_inf) {
+      max_inf = current_inf;
+      i_max = i;
+    }
+  }
 
-	if (max / (1 - eps) >= (sub_seeds[j][step].size() + 1) * thresholds[j]) {
-		if (max > max_solution)
-			max_solution = max;
-		return jj;
-	}
-	else return -1;
+  /*
+   * No need to consider denoise step in deterministic
+   * double eps = Constants::EPS / (Constants::NO_DENOISE_STEPS > 1 ?
+   * Constants::NO_DENOISE_STEPS - 1 : Constants::NO_DENOISE_STEPS) * step;
+   */
+  if ((max_inf / (sub_seeds_cost[j][step] + cost_matrix[e][i_max])) >=
+      (Constants::ALPHA * thresholds[j] / Constants::BUDGET)) {
+    max_solution = max(max_solution, max_inf);
+    return i_max;
+  } else {
+    return -1;
+  }
 }

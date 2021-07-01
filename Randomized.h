@@ -1,11 +1,9 @@
 #pragma once
 #include "Streaming.h"
 
-class Randomized : public Streaming
-{
+class Randomized : public Streaming {
 public:
-	Randomized(Network * g);
-	~Randomized();
-	int select_element(int j, uint e, int step);
+  Randomized(Network *g);
+  ~Randomized();
+  int select_element(int j, uint e, int step);
 };
-

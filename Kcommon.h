@@ -1,29 +1,26 @@
 #pragma once
-#include <omp.h>
-#include <vector>
-#include <string>
 #include "Constants.h"
+#include <omp.h>
+#include <string>
+#include <vector>
 
 using namespace std;
 
 typedef unsigned int uint;
-typedef pair<uint, uint> kp;
-typedef vector<kp> kseeds;
-
+typedef pair<uint, uint> kpoint;
+typedef vector<kpoint> kseeds;
 typedef vector<double> kbins;
 typedef vector<kbins> ksensors;
 
-class Kcommon
-{
+class Kcommon {
 public:
-	Kcommon();
-	~Kcommon();
+  Kcommon();
+  ~Kcommon();
 
-	static Kcommon * getInstance();
-	unsigned randomInThread(int thread_id);
+  static Kcommon *getInstance();
+  unsigned randomInThread(int thread_id);
 
 private:
-	static Kcommon * instance;
-	int * seed;
+  static Kcommon *instance;
+  int *seed;
 };
-
