@@ -4,14 +4,15 @@
 Framework::Framework(Network *g) {
   // Initialize the cost matrix
   int no_nodes = g->get_no_nodes();
-  for (int i = 0; i < no_nodes; i++) {
-    vector<int> vec(no_nodes);
-    for (int j = 0; j < no_nodes; j++) {
-      double r = rand() % 3 + 1;
-      vec[j] = r;
-    }
-    cost_matrix.push_back(vec);
-  }
+  cost_matrix = Constants::cost_matrix;
+  // for (int i = 0; i < no_nodes; i++) {
+  //   vector<double> vec(no_nodes);
+  //   for (int j = 0; j < no_nodes; j++) {
+  //     double r = rand() % 3 + 1;
+  //     vec[j] = r;
+  //   }
+  //   cost_matrix.push_back(vec);
+  // }
 
   this->g = g;
   no_samples = ceil(6.75 * ((double)(g->get_no_nodes())) /

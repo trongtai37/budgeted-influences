@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 enum DATATYPE { Social, Sensor };
 enum ALG { aGreedy, Dstream, Rstream, SGr, SampleRstream };
@@ -21,4 +22,5 @@ public:
   static double RHO;
   static double DELTA;         // for streaming algorithm
   static int NO_DENOISE_STEPS; // steps for eps' = 0 reach epsilon
+  static std::vector<std::vector<double>> cost_matrix;
 };

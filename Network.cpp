@@ -63,8 +63,6 @@ bool Network::read_network_from_file(int no_nodes, string file,
   uint s_id, e_id; // used to stored ordered id of startId and endId
   uint edge_id = 0;
 
-  cout << bufSize << endl;
-
   while (sp < bufSize) {
     char c = buffer[sp];
     item = item * 10 + c - 48;
@@ -391,7 +389,6 @@ void Network::clear() {
   preferences.clear();
   probabilities.clear();
   map_node_id.clear();
-
   sensor_data.clear();
 }
 

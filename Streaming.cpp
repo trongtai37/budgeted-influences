@@ -20,6 +20,7 @@ double Streaming::get_solution(bool is_dstream) {
   int c_passed = 0;
   double max_gain = 0.0;
   double log_delta = log(1 + Constants::EPS_TAG);
+
   for (uint e : node_sequence) {
     ++c_passed;
 
@@ -31,8 +32,8 @@ double Streaming::get_solution(bool is_dstream) {
 
       if (max_gain < current_inf) {
         max_gain = current_inf;
-        int j_tmp = ceil(log(max_gain / log_delta));
-        j_min = max(j_tmp, 0); /* could < 0 */
+        j_min = ceil(log(max_gain / log_delta));
+
         if (is_dstream) {
           /* upper bound if ds is running */
           j_max = floor(log(max_gain * Constants::BUDGET) / log_delta);
@@ -40,6 +41,9 @@ double Streaming::get_solution(bool is_dstream) {
           /* upper bound if rs is running */
           j_max = floor(log(max_gain * Constants::BUDGET) / log_delta);
         }
+
+        j_min = max(j_min, 0); /* could < 0 */
+        j_max = max(j_max, 0); /* could < 0 */
 
         /* Resize subseeds if having new j variable */
         if (j_max + 1 > sub_seeds.size()) {
@@ -83,7 +87,7 @@ double Streaming::get_solution(bool is_dstream) {
             int i = select_element(j, e, step);
             if (i != -1) {
               sub_seeds[j][step].push_back(kpoint(e, i));
-              sub_seeds_cost[j][step] += cost_matrix[e][0];
+              sub_seeds_cost[j][step] += cost_matrix[e][i];
             }
             // cout << "Select element ... " << e << ", " << i << endl;
           }

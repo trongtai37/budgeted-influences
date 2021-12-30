@@ -9,7 +9,6 @@ Randomized::Randomized(Network *g) : Streaming(g) {
       2 / (3 + Constants::BETA - (Constants::BETA / Constants::K));
   Constants::EPS_TAG =
       (3 + Constants::BETA - (Constants::BETA / Constants::K)) * Constants::EPS;
-  cout << "Algorithm 4 is running ..." << endl;
 }
 
 Randomized::~Randomized() {}

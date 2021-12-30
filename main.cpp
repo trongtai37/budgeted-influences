@@ -3,7 +3,10 @@
 #include <omp.h>
 #include <stdlib.h>
 #include <string>
+#include <sys/resource.h>
+#include <sys/time.h>
 #include <time.h>
+#include <tuple>
 
 #include "Constants.h"
 #include "Degree.h"
@@ -75,7 +78,6 @@ pair<string, int> parseArgs(int argc, char **argv) {
       if (arg == "-t") {
         Constants::DATA = val == 0 ? Social : Sensor;
         if (Constants::DATA == Sensor) {
-          Constants::EPS = 0;
           Constants::NO_DENOISE_STEPS = 1;
         }
       } else if (arg == "-V") {
@@ -95,6 +97,9 @@ pair<string, int> parseArgs(int argc, char **argv) {
         }
       } else if (arg == "-a") {
         switch (val) {
+        case 0:
+          Constants::ALGORITHM = aGreedy;
+          break;
         case 1:
           Constants::ALGORITHM = Dstream;
           break;
@@ -129,8 +134,6 @@ void run_command(string filename, int no_nodes) {
   } else
     r = g->read_sensor_data(no_nodes, filename);
 
-  cout << "Read network completely! ..." << endl;
-
   if (!r) {
     cout << "Wrong file, format or arguments" << endl;
     print_help();
@@ -139,6 +142,13 @@ void run_command(string filename, int no_nodes) {
     int no_queries = 0;
     omp_set_num_threads(Constants::NUM_THREAD);
     switch (Constants::ALGORITHM) {
+    case aGreedy: {
+      Greedy *gr = new Greedy(g);
+      sol = gr->get_solution();
+      no_queries = gr->get_no_queries();
+      delete gr;
+      break;
+    }
     case Rstream: {
       Constants::NO_DENOISE_STEPS = 1;
       Randomized *ra = new Randomized(g);
@@ -172,20 +182,36 @@ void run_command(string filename, int no_nodes) {
     }
     if (Constants::DATA == Sensor)
       sol = sol / 100;
-    cout << "Output: " << sol << endl
-         << "Number of queries: " << no_queries << endl;
+
+    std::cout << Constants::ALGORITHM << "," << Constants::EPS << ","
+              << Constants::BUDGET << "," << sol << "," << no_queries << ",";
   }
   delete g;
+}
+
+void print_performances(struct rusage *performance_start,
+                        struct rusage *performance_end) {
+  cout << (performance_end->ru_utime.tv_sec -
+           performance_start->ru_utime.tv_sec) +
+              1e-6 * (performance_end->ru_utime.tv_usec -
+                      performance_start->ru_utime.tv_usec)
+       << endl;
 }
 
 int main(int argc, char *argv[]) {
   srand(time(NULL));
   pair<string, int> r = parseArgs(argc, argv);
-  if (r.first == "error") {
-    cout << "Wrong file, format or arguments" << endl;
-    print_help();
-  } else
-    run_command(r.first, r.second);
+  struct rusage performance_start, performance_end;
+  getrusage(RUSAGE_SELF, &performance_start);
 
+  if (r.first == "error") {
+    std::cout << "Wrong file, format or arguments" << endl;
+    print_help();
+  } else {
+    run_command(r.first, r.second);
+  }
+
+  getrusage(RUSAGE_SELF, &performance_end);
+  print_performances(&performance_start, &performance_end);
   return 0;
 }

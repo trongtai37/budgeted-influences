@@ -1,5 +1,6 @@
 #pragma once
 #include "Network.h"
+#include <vector>
 
 class Framework {
 public:
@@ -12,5 +13,5 @@ public:
 protected:
   Network *g;
   uint no_samples;
-  vector<vector<int>> cost_matrix;
+  vector<vector<double>> cost_matrix;
 };

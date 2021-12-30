@@ -8,15 +8,12 @@ Deterministic::Deterministic(Network *g) : Streaming(g) {
 
   // Re-initialize cost_matrix
   int no_nodes = g->get_no_nodes();
-  fill(cost_matrix.begin(), cost_matrix.end(), vector<int>(no_nodes, 1));
-
-  cout << "Algorithm 2 is running ..." << cost_matrix[0][0] << endl;
 }
 
 Deterministic::~Deterministic() {}
 
 int Deterministic::select_element(int j, uint e, int step) {
-  uint i_max;
+  uint i_max = 0;
   double max_inf = 0.0;
 
   /* Find i_max */
@@ -36,8 +33,9 @@ int Deterministic::select_element(int j, uint e, int step) {
    * double eps = Constants::EPS / (Constants::NO_DENOISE_STEPS > 1 ?
    * Constants::NO_DENOISE_STEPS - 1 : Constants::NO_DENOISE_STEPS) * step;
    */
-  if ((max_inf / (sub_seeds_cost[j][step] + cost_matrix[e][i_max])) >=
-      (Constants::ALPHA * thresholds[j] / Constants::BUDGET)) {
+  if (i_max >= 0 &&
+      (max_inf / (sub_seeds_cost[j][step] + cost_matrix[e][i_max])) >=
+          (Constants::ALPHA * thresholds[j] / Constants::BUDGET)) {
     max_solution = max(max_solution, max_inf);
     return i_max;
   } else {

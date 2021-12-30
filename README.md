@@ -14,7 +14,7 @@ To build our code, run:
 After building, to run our code, run:
 
 ```
-	./ksub -f <data filename>
+	./ksub -f <data filename> -c <cost filename>
 		-V <size of V>
 		-t <type of experiment, 0: influence maximization, 1: sensor placement>
 		-k <value of k>
@@ -24,7 +24,7 @@ After building, to run our code, run:
 		-e <value of epsilon>
 		-n <value of eta - denoise step for RStream>
 		-g <value of gamma>
-		-a <algorithm, 1: DStream, 2: RStream, 3: SGr, 4: SampleRstream. Please use SSA source code for testing IM algorithm>
+		-a <algorithm, 0: Greedy, 1: DStream, 2: RStream, 3: SGr, 4: SampleRstream. Please use SSA source code for testing IM algorithm>
 		-p <number of threads (OpenMP) to running algorithms>
 ```
 
