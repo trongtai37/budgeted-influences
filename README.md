@@ -5,16 +5,23 @@ This zip includes:
 
 Since estimating F in influence maximization is very time consuming, our code uses OpenMP for parallelization (https://en.wikipedia.org/wiki/OpenMP).
 
+Before running experiments, you should generate cost_matrix in [Constants.cpp](Constants.cpp)
+To generate:
+
+```bash
+	node data/generateCost.js -n <no_of_nodes> -k <value_of_k> [--equal]
+```
+
 To build our code, run:
 
-```
+```bash
 	g++ -std=c++11 *.cpp -o ksub -DIL_STD -fopenmp -g
 ```
 
 After building, to run our code, run:
 
-```
-	./ksub -f <data filename> -c <cost filename>
+```bash
+	./ksub -f <data filename>
 		-V <size of V>
 		-t <type of experiment, 0: influence maximization, 1: sensor placement>
 		-k <value of k>
@@ -27,5 +34,3 @@ After building, to run our code, run:
 		-a <algorithm, 0: Greedy, 1: DStream, 2: RStream, 3: SGr, 4: SampleRstream. Please use SSA source code for testing IM algorithm>
 		-p <number of threads (OpenMP) to running algorithms>
 ```
-
-We conducted experiments on a Linux machine with 2.3Ghz Xeon 18 core processor and 256Gb of RAM. With 70 threads, DStream usually terminates after 20 minutes, RStream is 2 hours.
